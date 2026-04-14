@@ -472,10 +472,12 @@ function saveCard() {
   editingId=null;
 }
 function saveMultiCards() {
-  const toSave=multiResults.filter(r=>r.checked).map(r=>({...r,checked:undefined,id:genId()}));
-  cards=[...cards,...toSave]; persist(); applyFilters();
+  const toSave=[];
+  multiResults.forEach(function(r,i){ const chk=document.getElementById('chk-'+i); if(chk && chk.checked){ toSave.push(Object.assign({},r,{checked:undefined,id:genId()})); } });
+  if(toSave.length===0){ showNotif('❌ 名刺が選択されていません'); return; }
+  cards=cards.concat(toSave); persist(); applyFilters();
   closeModal('multi-modal');
-  showNotif(`✦ ${toSave.length}枚の名刺を保存しました`);
+  showNotif('✦ '+toSave.length+'枚の名刺を保存しました');
 }
 function deleteCard(id) {
   if(!confirm('この名刺を削除しますか？')) return;
