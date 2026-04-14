@@ -429,8 +429,7 @@ async function readMultiWithAI() {
 function renderMultiResults() {
   document.getElementById('multi-results').innerHTML=multiResults.map((r,i)=>`
     <div class="result-item">
-      <input type="checkbox" class="result-cb" id="chk-${i}" ${r.checked?'checked':''} onchange="multiResults[${i}].checked=this.checked">
-      ${r.image?`<img src="${r.image}" alt="">`:''}
+      <input type="checkbox" class="result-cb" id="chk-${i}" checked>
       <div class="result-body">
         <h4>${esc(r.name||'不明')}</h4>
         <p>${esc([r.company,r.jobTitle].filter(Boolean).join(' / '))}</p>
