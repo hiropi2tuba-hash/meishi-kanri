@@ -6,145 +6,130 @@
 <title>名刺帳 — MEISHI</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Space+Mono:wght@400;700&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink: #1a1410; --paper: #f5f0e8; --cream: #ede8dc;
-  --gold: #b8963e; --gold-light: #d4aa5a; --red: #c0392b;
-  --muted: #8a7d6b; --card-bg: #faf7f2; --border: #d4c9b0;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; }
-header { background:var(--ink); padding:16px 32px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; border-bottom:2px solid var(--gold); }
-.logo { font-family:'Space Mono',monospace; font-size:20px; color:var(--gold); letter-spacing:6px; font-weight:700; }
-.logo span { color:#fff; font-size:10px; display:block; letter-spacing:3px; margin-top:2px; font-weight:300; opacity:0.7; }
-.header-stat { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); text-align:right; }
-.header-stat strong { color:var(--gold); font-size:22px; display:block; }
-.container { max-width:1400px; margin:0 auto; padding:0 32px; }
-.toolbar { display:flex; gap:10px; align-items:center; padding:20px 0 16px; flex-wrap:wrap; }
-.btn { display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New',sans-serif; font-size:13px; font-weight:700; transition:all 0.2s; letter-spacing:0.5px; }
-.btn-primary { background:var(--gold); color:var(--ink); }
-.btn-primary:hover { background:var(--gold-light); transform:translateY(-1px); }
-.btn-secondary { background:transparent; color:var(--ink); border:1.5px solid var(--border); }
-.btn-secondary:hover { border-color:var(--gold); color:var(--gold); }
-.btn-danger { background:transparent; color:var(--red); border:1.5px solid var(--red); }
-.btn-danger:hover { background:var(--red); color:#fff; }
-.btn:disabled { opacity:0.5; cursor:not-allowed; }
-.search-bar { display:flex; gap:12px; padding:14px 18px; background:var(--cream); border:1px solid var(--border); margin-bottom:22px; flex-wrap:wrap; align-items:flex-end; }
-.sg { display:flex; flex-direction:column; gap:4px; }
-.sg label { font-size:10px; font-weight:700; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
-.sg input,.sg select { background:var(--card-bg); border:1px solid var(--border); padding:7px 10px; font-family:'Zen Kaku Gothic New',sans-serif; font-size:13px; color:var(--ink); outline:none; min-width:120px; }
-.sg input:focus,.sg select:focus { border-color:var(--gold); }
-.card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; padding-bottom:60px; }
-.meishi-card { background:var(--card-bg); border:1px solid var(--border); position:relative; transition:all 0.25s; cursor:pointer; overflow:hidden; }
-.meishi-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--gold); opacity:0; transition:opacity 0.2s; }
-.meishi-card:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(26,20,16,0.12); border-color:var(--gold); }
-.meishi-card:hover::before { opacity:1; }
-.meishi-card:hover .card-actions { opacity:1; }
-.card-img { width:100%; height:110px; object-fit:cover; display:block; border-bottom:1px solid var(--border); }
-.card-placeholder { width:100%; height:110px; background:linear-gradient(135deg,var(--cream),#e8e0d0); display:flex; align-items:center; justify-content:center; font-size:28px; border-bottom:1px solid var(--border); color:var(--border); }
-.card-body { padding:14px 16px; }
-.card-company { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:3px; }
-.card-name { font-family:'Noto Serif JP',serif; font-size:17px; font-weight:600; margin-bottom:2px; }
-.card-subtitle { font-size:11px; color:var(--muted); margin-bottom:8px; }
-.card-meta { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
-.tag { font-size:9px; padding:2px 7px; background:var(--cream); border:1px solid var(--border); color:var(--muted); font-weight:700; }
-.tag-i { border-color:var(--gold); color:var(--gold); background:rgba(184,150,62,0.08); }
-.tag-m { border-color:#5a8a6e; color:#5a8a6e; background:rgba(90,138,110,0.08); }
-.card-date { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); margin-top:6px; }
-.card-actions { position:absolute; top:6px; right:6px; display:flex; gap:3px; opacity:0; transition:opacity 0.2s; }
-.icon-btn { width:28px; height:28px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px; transition:all 0.2s; }
-.icon-btn:hover { transform:scale(1.1); }
-.icon-btn-edit { background:var(--ink); color:var(--gold); }
-.icon-btn-del { background:var(--red); color:#fff; }
-.empty { grid-column:1/-1; text-align:center; padding:70px 20px; color:var(--muted); }
-.empty-icon { font-size:52px; margin-bottom:14px; opacity:0.4; }
-.empty h3 { font-family:'Noto Serif JP',serif; font-size:18px; margin-bottom:6px; color:var(--ink); opacity:0.6; }
-.overlay { position:fixed; inset:0; background:rgba(26,20,16,0.75); z-index:1000; display:none; align-items:center; justify-content:center; padding:16px; }
-.overlay.active { display:flex; }
-.modal { background:var(--card-bg); border:1px solid var(--border); width:100%; max-width:660px; max-height:92vh; overflow-y:auto; }
-.modal-hdr { background:var(--ink); padding:18px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10; }
-.modal-title { font-family:'Space Mono',monospace; font-size:12px; letter-spacing:3px; color:var(--gold); }
-.modal-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; opacity:0.6; line-height:1; }
-.modal-close:hover { opacity:1; }
-.modal-body { padding:24px; }
-.upload-zone { border:2px dashed var(--border); padding:32px 16px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:16px; position:relative; }
-.upload-zone:hover { border-color:var(--gold); background:rgba(184,150,62,0.04); }
-.upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-.upload-icon { font-size:36px; margin-bottom:10px; }
-.upload-zone p { color:var(--muted); font-size:13px; margin-bottom:3px; }
-.upload-zone small { color:var(--border); font-size:11px; }
-.preview-strip { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
-.preview-item { position:relative; width:76px; height:52px; }
-.preview-item img { width:100%; height:100%; object-fit:cover; border:1px solid var(--border); }
-.remove-prev { position:absolute; top:-5px; right:-5px; width:16px; height:16px; background:var(--red); color:#fff; border:none; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
-.ai-btn { width:100%; padding:12px; background:linear-gradient(135deg,var(--ink),#2d2520); color:var(--gold); border:1px solid var(--gold); cursor:pointer; font-family:'Space Mono',monospace; font-size:12px; letter-spacing:2px; font-weight:700; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:20px; }
-.ai-btn:hover:not(:disabled) { background:var(--gold); color:var(--ink); }
-.ai-btn:disabled { opacity:0.5; cursor:not-allowed; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.spin { display:inline-block; animation:spin 1s linear infinite; }
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.fg { display:flex; flex-direction:column; gap:5px; }
-.fg.full { grid-column:1/-1; }
-.fg label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
-.fg input,.fg select,.fg textarea { background:var(--paper); border:1px solid var(--border); padding:9px 10px; font-family:'Zen Kaku Gothic New',sans-serif; font-size:13px; color:var(--ink); outline:none; transition:border-color 0.2s; }
-.fg input:focus,.fg select:focus,.fg textarea:focus { border-color:var(--gold); }
-.fg textarea { resize:vertical; min-height:65px; }
-.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); }
-.detail-hero { background:var(--cream); padding:20px; margin-bottom:20px; border-left:3px solid var(--gold); }
-.detail-hero h2 { font-family:'Noto Serif JP',serif; font-size:24px; font-weight:600; margin-bottom:3px; }
-.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.df label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:3px; }
-.df p { font-size:13px; }
-.df a { color:var(--gold); }
-.df.full { grid-column:1/-1; }
-.result-item { border:1px solid var(--border); padding:14px; background:var(--paper); display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; }
-.result-item img { width:90px; height:60px; object-fit:cover; border:1px solid var(--border); flex-shrink:0; }
-.result-body { flex:1; }
-.result-body h4 { font-family:'Noto Serif JP',serif; font-size:14px; margin-bottom:3px; }
-.result-body p { font-size:11px; color:var(--muted); }
-.result-cb { accent-color:var(--gold); width:15px; height:15px; margin-top:2px; cursor:pointer; flex-shrink:0; }
-.notif { position:fixed; bottom:24px; right:24px; background:var(--ink); color:var(--gold); padding:10px 20px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1px; border-left:3px solid var(--gold); z-index:9999; transform:translateY(60px); opacity:0; transition:all 0.3s; pointer-events:none; }
-.notif.show { transform:translateY(0); opacity:1; }
-.filtered-count { font-size:11px; color:var(--muted); margin-left:auto; }
+:root{--ink:#1a1410;--paper:#f5f0e8;--cream:#ede8dc;--gold:#b8963e;--gold-light:#d4aa5a;--red:#c0392b;--muted:#8a7d6b;--card-bg:#faf7f2;--border:#d4c9b0;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+header{background:var(--ink);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:2px solid var(--gold);}
+.logo{font-family:'Space Mono',monospace;font-size:18px;color:var(--gold);letter-spacing:4px;font-weight:700;}
+.logo span{color:#fff;font-size:10px;display:block;letter-spacing:2px;margin-top:2px;font-weight:300;opacity:0.7;}
+.header-stat{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:right;}
+.header-stat strong{color:var(--gold);font-size:20px;display:block;}
+.container{max-width:1400px;margin:0 auto;padding:0 20px;}
+.toolbar{display:flex;gap:10px;align-items:center;padding:18px 0 14px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border:none;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;font-weight:700;transition:all 0.2s;}
+.btn-primary{background:var(--gold);color:var(--ink);}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-secondary{background:transparent;color:var(--ink);border:1.5px solid var(--border);}
+.btn-danger{background:transparent;color:var(--red);border:1.5px solid var(--red);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.search-bar{display:flex;gap:10px;padding:12px 16px;background:var(--cream);border:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;align-items:flex-end;}
+.sg{display:flex;flex-direction:column;gap:4px;}
+.sg label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.sg input,.sg select{background:var(--card-bg);border:1px solid var(--border);padding:7px 10px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;color:var(--ink);outline:none;min-width:110px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding-bottom:60px;}
+.meishi-card{background:var(--card-bg);border:1px solid var(--border);position:relative;cursor:pointer;overflow:hidden;transition:all 0.25s;}
+.meishi-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(26,20,16,0.12);border-color:var(--gold);}
+.card-img{width:100%;height:100px;object-fit:cover;display:block;border-bottom:1px solid var(--border);}
+.card-placeholder{width:100%;height:100px;background:linear-gradient(135deg,var(--cream),#e8e0d0);display:flex;align-items:center;justify-content:center;font-size:24px;border-bottom:1px solid var(--border);}
+.card-body{padding:12px 14px;}
+.card-company{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:3px;}
+.card-name{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:600;margin-bottom:2px;}
+.card-subtitle{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.card-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+.tag{font-size:9px;padding:2px 6px;background:var(--cream);border:1px solid var(--border);color:var(--muted);font-weight:700;}
+.tag-i{border-color:var(--gold);color:var(--gold);}
+.tag-m{border-color:#5a8a6e;color:#5a8a6e;}
+.card-date{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:5px;}
+.card-actions{position:absolute;top:5px;right:5px;display:flex;gap:3px;opacity:0;transition:opacity 0.2s;}
+.meishi-card:hover .card-actions{opacity:1;}
+.icon-btn{width:26px;height:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.icon-btn-edit{background:var(--ink);color:var(--gold);}
+.icon-btn-del{background:var(--red);color:#fff;}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:0.4;}
+.empty h3{font-family:'Noto Serif JP',serif;font-size:18px;margin-bottom:6px;color:var(--ink);opacity:0.6;}
+.overlay{position:fixed;inset:0;background:rgba(26,20,16,0.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:14px;}
+.overlay.active{display:flex;}
+.modal{background:var(--card-bg);border:1px solid var(--border);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;}
+.modal-hdr{background:var(--ink);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.modal-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--gold);}
+.modal-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:0.6;}
+.modal-body{padding:20px;}
+.upload-zone{border:2px dashed var(--border);padding:28px 14px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:14px;position:relative;}
+.upload-zone:hover{border-color:var(--gold);}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:32px;margin-bottom:8px;}
+.upload-zone p{color:var(--muted);font-size:13px;}
+.upload-zone small{color:var(--border);font-size:11px;}
+.preview-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.preview-item{position:relative;width:70px;height:48px;}
+.preview-item img{width:100%;height:100%;object-fit:cover;border:1px solid var(--border);}
+.remove-prev{position:absolute;top:-5px;right:-5px;width:16px;height:16px;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:10px;border-radius:50%;}
+.ai-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--ink),#2d2520);color:var(--gold);border:1px solid var(--gold);cursor:pointer;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;font-weight:700;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;}
+.ai-btn:hover:not(:disabled){background:var(--gold);color:var(--ink);}
+.ai-btn:disabled{opacity:0.5;cursor:not-allowed;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{display:inline-block;animation:spin 1s linear infinite;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg.full{grid-column:1/-1;}
+.fg label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.fg input,.fg select,.fg textarea{background:var(--paper);border:1px solid var(--border);padding:8px 10px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;color:var(--ink);outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
+.fg textarea{resize:vertical;min-height:60px;}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+.detail-hero{background:var(--cream);padding:18px;margin-bottom:18px;border-left:3px solid var(--gold);}
+.detail-hero h2{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600;margin-bottom:3px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.df label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px;}
+.df p{font-size:13px;}
+.df a{color:var(--gold);}
+.df.full{grid-column:1/-1;}
+.result-item{border:1px solid var(--border);padding:12px;background:var(--paper);display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
+.result-body{flex:1;}
+.result-body h4{font-family:'Noto Serif JP',serif;font-size:14px;margin-bottom:3px;}
+.result-body p{font-size:11px;color:var(--muted);}
+.result-cb{accent-color:var(--gold);width:18px;height:18px;margin-top:2px;cursor:pointer;flex-shrink:0;}
+.notif{position:fixed;bottom:20px;right:20px;background:var(--ink);color:var(--gold);padding:10px 18px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;border-left:3px solid var(--gold);z-index:9999;transform:translateY(60px);opacity:0;transition:all 0.3s;pointer-events:none;}
+.notif.show{transform:translateY(0);opacity:1;}
+.save-multi-wrap{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.save-multi-wrap .btn{width:100%;justify-content:center;padding:14px;}
 @media(max-width:640px){
-  header { padding:14px 16px; }
-  .container { padding:0 16px; }
-  .form-grid,.detail-grid { grid-template-columns:1fr; }
-  .card-grid { grid-template-columns:1fr; }
-  .fg.full,.df.full { grid-column:1; }
+  header{padding:12px 16px;}
+  .container{padding:0 14px;}
+  .form-grid,.detail-grid{grid-template-columns:1fr;}
+  .card-grid{grid-template-columns:1fr;}
+  .fg.full,.df.full{grid-column:1;}
 }
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">MEISHI<span>名刺管理システム</span></div>
   <div class="header-stat"><strong id="total-count">0</strong>枚の名刺</div>
 </header>
-
 <div class="container">
   <div class="toolbar">
-    <button class="btn btn-primary" onclick="openAddModal()">📷 名刺を追加</button>
-    <button class="btn btn-secondary" onclick="openMultiModal()">📚 まとめて追加</button>
-    <span class="filtered-count" id="filtered-count"></span>
+    <button class="btn btn-primary" id="open-add-btn">📷 名刺を追加</button>
+    <button class="btn btn-secondary" id="open-multi-btn">📚 まとめて追加</button>
+    <span id="filtered-count" style="font-size:11px;color:var(--muted);margin-left:auto;"></span>
   </div>
-
   <div class="search-bar">
-    <div class="sg"><label>🔍 キーワード</label><input id="s-text" placeholder="名前・会社名など" oninput="applyFilters()"></div>
-    <div class="sg"><label>🏢 業種</label><select id="s-industry" onchange="applyFilters()"><option value="">すべて</option></select></div>
+    <div class="sg"><label>🔍 キーワード</label><input id="s-text" placeholder="名前・会社名など"></div>
+    <div class="sg"><label>🏢 業種</label><select id="s-industry"><option value="">すべて</option></select></div>
     <div class="sg">
       <label>🤝 きっかけ</label>
-      <select id="s-meeting" onchange="applyFilters()">
+      <select id="s-meeting">
         <option value="">すべて</option>
         <option>展示会</option><option>紹介</option><option>営業訪問</option>
         <option>セミナー</option><option>交流会</option><option>伍心会</option>
         <option>守成</option><option>オンライン</option><option>その他</option>
       </select>
     </div>
-    <div class="sg"><label>📅 開始日</label><input type="date" id="s-from" onchange="applyFilters()"></div>
-    <div class="sg"><label>📅 終了日</label><input type="date" id="s-to" onchange="applyFilters()"></div>
-    <button class="btn btn-secondary" onclick="clearFilters()">リセット</button>
+    <div class="sg"><label>📅 開始日</label><input type="date" id="s-from"></div>
+    <div class="sg"><label>📅 終了日</label><input type="date" id="s-to"></div>
+    <button class="btn btn-secondary" id="clear-filter-btn">リセット</button>
   </div>
-
   <div class="card-grid" id="card-grid"></div>
 </div>
 
@@ -153,17 +138,17 @@ header { background:var(--ink); padding:16px 32px; display:flex; align-items:cen
   <div class="modal">
     <div class="modal-hdr">
       <div class="modal-title" id="add-modal-title">📷 名刺を追加</div>
-      <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+      <button class="modal-close" id="close-add-btn">✕</button>
     </div>
     <div class="modal-body">
       <div class="upload-zone">
-        <input type="file" accept="image/*" onchange="handleSingleImage(event)">
+        <input type="file" accept="image/*" id="single-file-input">
         <div class="upload-icon">📸</div>
         <p>ここをタップして名刺を選択・撮影</p>
         <small>JPG / PNG / HEIC 対応</small>
       </div>
       <div id="single-preview" class="preview-strip"></div>
-      <button class="ai-btn" id="ai-btn" onclick="readWithAI()" disabled>
+      <button class="ai-btn" id="ai-btn" disabled>
         <span id="ai-icon">✦</span>
         <span id="ai-text">AIで名刺を読み取る</span>
       </button>
@@ -199,8 +184,8 @@ header { background:var(--ink); padding:16px 32px; display:flex; align-items:cen
         <div class="fg full"><label>メモ</label><textarea id="f-memo" placeholder="話した内容など..."></textarea></div>
       </div>
       <div class="form-actions">
-        <button class="btn btn-secondary" onclick="closeModal('add-modal')">キャンセル</button>
-        <button class="btn btn-primary" onclick="saveCard()">💾 保存する</button>
+        <button class="btn btn-secondary" id="cancel-add-btn">キャンセル</button>
+        <button class="btn btn-primary" id="save-card-btn">💾 保存する</button>
       </div>
     </div>
   </div>
@@ -211,24 +196,26 @@ header { background:var(--ink); padding:16px 32px; display:flex; align-items:cen
   <div class="modal">
     <div class="modal-hdr">
       <div class="modal-title">📚 まとめて追加</div>
-      <button class="modal-close" onclick="closeModal('multi-modal')">✕</button>
+      <button class="modal-close" id="close-multi-btn">✕</button>
     </div>
     <div class="modal-body">
       <div class="upload-zone">
-        <input type="file" accept="image/*" multiple onchange="handleMultiImages(event)">
+        <input type="file" accept="image/*" multiple id="multi-file-input">
         <div class="upload-icon">📸</div>
         <p>複数の名刺画像を選択</p>
         <small>複数ファイルを同時に選択できます</small>
       </div>
       <div id="multi-preview" class="preview-strip"></div>
-      <button class="ai-btn" id="ai-multi-btn" onclick="readMultiWithAI()" disabled>
+      <button class="ai-btn" id="ai-multi-btn" disabled>
         <span id="ai-multi-icon">✦</span>
         <span id="ai-multi-text">AIで全枚読み取る</span>
       </button>
       <div id="multi-results"></div>
+      <div class="save-multi-wrap" id="save-multi-wrap" style="display:none">
+        <button class="btn btn-primary" id="save-multi-btn">💾 選択した名刺を保存</button>
+      </div>
       <div class="form-actions">
-        <button class="btn btn-secondary" onclick="closeModal('multi-modal')">キャンセル</button>
-        <button class="btn btn-primary" id="save-multi-btn" onclick="saveMultiCards()" style="display:none">💾 選択した名刺を保存</button>
+        <button class="btn btn-secondary" id="cancel-multi-btn">キャンセル</button>
       </div>
     </div>
   </div>
@@ -239,7 +226,7 @@ header { background:var(--ink); padding:16px 32px; display:flex; align-items:cen
   <div class="modal">
     <div class="modal-hdr">
       <div class="modal-title">名刺詳細</div>
-      <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+      <button class="modal-close" id="close-detail-btn">✕</button>
     </div>
     <div class="modal-body" id="detail-body"></div>
   </div>
@@ -248,294 +235,458 @@ header { background:var(--ink); padding:16px 32px; display:flex; align-items:cen
 <div class="notif" id="notif"></div>
 
 <script>
-let cards = JSON.parse(localStorage.getItem('meishi_cards') || '[]');
-let editingId = null;
-let currentImages = [];
-let multiImages = [];
-let multiResults = [];
+var cards = [];
+var editingId = null;
+var currentImages = [];
+var multiImages = [];
+var multiResults = [];
 
-applyFilters();
+try { cards = JSON.parse(localStorage.getItem('meishi_cards') || '[]'); } catch(e) { cards = []; }
 
-// AI CALL — サーバー経由（CORSなし）
-async function callAI(dataUrl) {
-  const base64 = dataUrl.split(',')[1];
-  const mediaType = dataUrl.match(/data:([^;]+)/)[1];
-  const resp = await fetch('/api/read-card', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ imageBase64: base64, mediaType })
-  });
-  const data = await resp.json();
-  if (data.error) throw new Error(data.error);
-  return data;
+function persist() {
+  try { localStorage.setItem('meishi_cards', JSON.stringify(cards)); } catch(e) {}
 }
 
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var notifTimer;
+function showNotif(msg) {
+  var n = document.getElementById('notif');
+  n.textContent = msg;
+  n.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(function() { n.classList.remove('show'); }, 3500);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// FILTERS
 function applyFilters() {
-  const text = (document.getElementById('s-text').value||'').toLowerCase();
-  const industry = document.getElementById('s-industry').value;
-  const meeting = document.getElementById('s-meeting').value;
-  const from = document.getElementById('s-from').value;
-  const to = document.getElementById('s-to').value;
-  const filtered = cards.filter(c => {
-    if (text && !`${c.name||''}${c.company||''}${c.dept||''}${c.jobTitle||''}${c.email||''}${c.memo||''}`.toLowerCase().includes(text)) return false;
+  var text = (document.getElementById('s-text').value || '').toLowerCase();
+  var industry = document.getElementById('s-industry').value;
+  var meeting = document.getElementById('s-meeting').value;
+  var from = document.getElementById('s-from').value;
+  var to = document.getElementById('s-to').value;
+
+  var filtered = cards.filter(function(c) {
+    if (text && !(c.name+c.company+c.dept+c.jobTitle+c.email+c.memo).toLowerCase().includes(text)) return false;
     if (industry && c.industry !== industry) return false;
     if (meeting && c.meeting !== meeting) return false;
     if (from && c.date && c.date < from) return false;
     if (to && c.date && c.date > to) return false;
     return true;
   });
+
   document.getElementById('total-count').textContent = cards.length;
-  const isFiltered = text||industry||meeting||from||to;
-  document.getElementById('filtered-count').textContent = isFiltered ? `${filtered.length} 件絞り込み中` : '';
-  const sel = document.getElementById('s-industry');
-  const cur = sel.value;
-  const inds = [...new Set(cards.map(c=>c.industry).filter(Boolean))].sort();
-  sel.innerHTML = '<option value="">すべて</option>' + inds.map(i=>`<option>${esc(i)}</option>`).join('');
+  var isFiltered = text || industry || meeting || from || to;
+  document.getElementById('filtered-count').textContent = isFiltered ? (filtered.length + ' 件絞り込み中') : '';
+
+  var sel = document.getElementById('s-industry');
+  var cur = sel.value;
+  var inds = [];
+  cards.forEach(function(c) { if (c.industry && inds.indexOf(c.industry) === -1) inds.push(c.industry); });
+  inds.sort();
+  sel.innerHTML = '<option value="">すべて</option>' + inds.map(function(i) { return '<option>' + esc(i) + '</option>'; }).join('');
   sel.value = cur;
+
   renderGrid(filtered);
 }
 
-function clearFilters() {
-  ['s-text','s-from','s-to'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('s-industry').value='';
-  document.getElementById('s-meeting').value='';
-  applyFilters();
-}
-
 function renderGrid(data) {
-  const grid = document.getElementById('card-grid');
+  var grid = document.getElementById('card-grid');
   if (!data.length) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">🗂️</div><h3>${cards.length?'検索結果なし':'名刺がまだありません'}</h3><p>${cards.length?'絞り込み条件を変更してください':'「名刺を追加」から始めてください'}</p></div>`;
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">🗂️</div><h3>' + (cards.length ? '検索結果なし' : '名刺がまだありません') + '</h3><p>' + (cards.length ? '絞り込み条件を変更してください' : '「名刺を追加」から始めてください') + '</p></div>';
     return;
   }
-  grid.innerHTML = data.map(c => `
-    <div class="meishi-card" onclick="openDetail('${c.id}')">
-      <div class="card-actions">
-        <button class="icon-btn icon-btn-edit" onclick="event.stopPropagation();openEdit('${c.id}')">✏️</button>
-        <button class="icon-btn icon-btn-del" onclick="event.stopPropagation();deleteCard('${c.id}')">🗑</button>
-      </div>
-      ${c.image?`<img class="card-img" src="${c.image}" alt="名刺">`:`<div class="card-placeholder">🪪</div>`}
-      <div class="card-body">
-        <div class="card-company">${esc(c.company||'—')}</div>
-        <div class="card-name">${esc(c.name||'名前なし')}</div>
-        <div class="card-subtitle">${esc([c.dept,c.jobTitle].filter(Boolean).join(' / '))}</div>
-        <div class="card-meta">
-          ${c.industry?`<span class="tag tag-i">${esc(c.industry)}</span>`:''}
-          ${c.meeting?`<span class="tag tag-m">${esc(c.meeting)}</span>`:''}
-        </div>
-        ${c.date?`<div class="card-date">📅 ${c.date}</div>`:''}
-      </div>
-    </div>`).join('');
+  grid.innerHTML = data.map(function(c) {
+    return '<div class="meishi-card" data-id="' + c.id + '">' +
+      '<div class="card-actions">' +
+        '<button class="icon-btn icon-btn-edit" data-edit="' + c.id + '">✏️</button>' +
+        '<button class="icon-btn icon-btn-del" data-del="' + c.id + '">🗑</button>' +
+      '</div>' +
+      (c.image ? '<img class="card-img" src="' + c.image + '" alt="名刺">' : '<div class="card-placeholder">🪪</div>') +
+      '<div class="card-body">' +
+        '<div class="card-company">' + esc(c.company || '—') + '</div>' +
+        '<div class="card-name">' + esc(c.name || '名前なし') + '</div>' +
+        '<div class="card-subtitle">' + esc([c.dept,c.jobTitle].filter(Boolean).join(' / ')) + '</div>' +
+        '<div class="card-meta">' +
+          (c.industry ? '<span class="tag tag-i">' + esc(c.industry) + '</span>' : '') +
+          (c.meeting ? '<span class="tag tag-m">' + esc(c.meeting) + '</span>' : '') +
+        '</div>' +
+        (c.date ? '<div class="card-date">📅 ' + c.date + '</div>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
-function openAddModal() {
-  editingId=null; currentImages=[];
+document.getElementById('card-grid').addEventListener('click', function(e) {
+  var editBtn = e.target.closest('[data-edit]');
+  var delBtn = e.target.closest('[data-del]');
+  var card = e.target.closest('.meishi-card');
+  if (editBtn) { e.stopPropagation(); openEdit(editBtn.getAttribute('data-edit')); }
+  else if (delBtn) { e.stopPropagation(); deleteCard(delBtn.getAttribute('data-del')); }
+  else if (card) { openDetail(card.getAttribute('data-id')); }
+});
+
+// ADD MODAL
+document.getElementById('open-add-btn').addEventListener('click', function() {
+  editingId = null;
+  currentImages = [];
   resetForm();
   document.getElementById('f-date').value = today();
   document.getElementById('add-modal-title').textContent = '📷 名刺を追加';
-  document.getElementById('single-preview').innerHTML='';
-  document.getElementById('ai-btn').disabled=true;
+  document.getElementById('single-preview').innerHTML = '';
+  document.getElementById('ai-btn').disabled = true;
   document.getElementById('add-modal').classList.add('active');
-}
-function openEdit(id) {
-  const c = cards.find(x=>x.id===id); if(!c) return;
-  editingId=id; currentImages=c.image?[{dataUrl:c.image}]:[];
-  document.getElementById('f-name').value=c.name||'';
-  document.getElementById('f-kana').value=c.kana||'';
-  document.getElementById('f-company').value=c.company||'';
-  document.getElementById('f-dept').value=c.dept||'';
-  document.getElementById('f-title').value=c.jobTitle||'';
-  document.getElementById('f-email').value=c.email||'';
-  document.getElementById('f-tel').value=c.tel||'';
-  document.getElementById('f-address').value=c.address||'';
-  document.getElementById('f-industry').value=c.industry||'';
-  document.getElementById('f-meeting').value=c.meeting||'';
-  document.getElementById('f-date').value=c.date||'';
-  document.getElementById('f-memo').value=c.memo||'';
-  renderSinglePreview();
-  document.getElementById('ai-btn').disabled=!currentImages.length;
-  document.getElementById('add-modal-title').textContent='✏️ 名刺を編集';
-  document.getElementById('add-modal').classList.add('active');
-}
-function openMultiModal() {
-  multiImages=[]; multiResults=[];
-  document.getElementById('multi-preview').innerHTML='';
-  document.getElementById('multi-results').innerHTML='';
-  document.getElementById('ai-multi-btn').disabled=true;
-  document.getElementById('save-multi-btn').style.display='none';
-  document.getElementById('multi-modal').classList.add('active');
-}
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); });
 });
 
-function handleSingleImage(e) {
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev => { currentImages=[{dataUrl:ev.target.result}]; renderSinglePreview(); document.getElementById('ai-btn').disabled=false; };
+document.getElementById('close-add-btn').addEventListener('click', function() { closeModal('add-modal'); });
+document.getElementById('cancel-add-btn').addEventListener('click', function() { closeModal('add-modal'); });
+
+document.getElementById('single-file-input').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    currentImages = [{dataUrl: ev.target.result}];
+    renderSinglePreview();
+    document.getElementById('ai-btn').disabled = false;
+  };
   reader.readAsDataURL(file);
-}
+});
+
 function renderSinglePreview() {
-  document.getElementById('single-preview').innerHTML=currentImages.map((img,i)=>`
-    <div class="preview-item"><img src="${img.dataUrl}"><button class="remove-prev" onclick="removeSingleImage(${i})">✕</button></div>`).join('');
+  document.getElementById('single-preview').innerHTML = currentImages.map(function(img, i) {
+    return '<div class="preview-item"><img src="' + img.dataUrl + '"><button class="remove-prev" data-idx="' + i + '">✕</button></div>';
+  }).join('');
 }
-function removeSingleImage(i) { currentImages.splice(i,1); renderSinglePreview(); document.getElementById('ai-btn').disabled=!currentImages.length; }
-function handleMultiImages(e) {
-  const files=Array.from(e.target.files);
-  Promise.all(files.map(f=>new Promise(res=>{ const r=new FileReader(); r.onload=ev=>res({dataUrl:ev.target.result}); r.readAsDataURL(f); }))).then(imgs=>{
-    multiImages=imgs;
-    document.getElementById('multi-preview').innerHTML=imgs.map(img=>`<div class="preview-item"><img src="${img.dataUrl}"></div>`).join('');
-    document.getElementById('ai-multi-btn').disabled=false;
+
+document.getElementById('single-preview').addEventListener('click', function(e) {
+  if (e.target.classList.contains('remove-prev')) {
+    currentImages.splice(parseInt(e.target.getAttribute('data-idx')), 1);
+    renderSinglePreview();
+    document.getElementById('ai-btn').disabled = currentImages.length === 0;
+  }
+});
+
+document.getElementById('ai-btn').addEventListener('click', function() {
+  if (!currentImages.length) return;
+  setAI('ai-btn', 'ai-icon', 'ai-text', true, '読み取り中...');
+  callAI(currentImages[0].dataUrl).then(function(p) {
+    if (p.name) document.getElementById('f-name').value = p.name;
+    if (p.kana) document.getElementById('f-kana').value = p.kana;
+    if (p.company) document.getElementById('f-company').value = p.company;
+    if (p.dept) document.getElementById('f-dept').value = p.dept;
+    if (p.jobTitle) document.getElementById('f-title').value = p.jobTitle;
+    if (p.email) document.getElementById('f-email').value = p.email;
+    if (p.tel) document.getElementById('f-tel').value = p.tel;
+    if (p.address) document.getElementById('f-address').value = p.address;
+    if (p.industry) document.getElementById('f-industry').value = p.industry;
+    showNotif('✦ AI読み取り完了！内容を確認してください');
+    setAI('ai-btn', 'ai-icon', 'ai-text', false, 'AIで名刺を読み取る');
+  }).catch(function(e) {
+    showNotif('❌ ' + e.message);
+    setAI('ai-btn', 'ai-icon', 'ai-text', false, 'AIで名刺を読み取る');
+  });
+});
+
+document.getElementById('save-card-btn').addEventListener('click', function() {
+  var name = document.getElementById('f-name').value.trim();
+  if (!name) { showNotif('❌ 氏名を入力してください'); return; }
+  var card = {
+    id: editingId || genId(),
+    name: name,
+    kana: document.getElementById('f-kana').value.trim(),
+    company: document.getElementById('f-company').value.trim(),
+    dept: document.getElementById('f-dept').value.trim(),
+    jobTitle: document.getElementById('f-title').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    tel: document.getElementById('f-tel').value.trim(),
+    address: document.getElementById('f-address').value.trim(),
+    industry: document.getElementById('f-industry').value,
+    meeting: document.getElementById('f-meeting').value,
+    date: document.getElementById('f-date').value,
+    memo: document.getElementById('f-memo').value.trim(),
+    image: currentImages.length ? currentImages[0].dataUrl : (editingId ? (cards.filter(function(c){return c.id===editingId;})[0]||{}).image : null)
+  };
+  if (editingId) {
+    cards = cards.map(function(c) { return c.id === editingId ? card : c; });
+  } else {
+    cards.push(card);
+  }
+  persist();
+  applyFilters();
+  closeModal('add-modal');
+  closeModal('detail-modal');
+  showNotif(editingId ? '✦ 名刺を更新しました' : '✦ 名刺を保存しました');
+  editingId = null;
+});
+
+// MULTI MODAL
+document.getElementById('open-multi-btn').addEventListener('click', function() {
+  multiImages = [];
+  multiResults = [];
+  document.getElementById('multi-preview').innerHTML = '';
+  document.getElementById('multi-results').innerHTML = '';
+  document.getElementById('ai-multi-btn').disabled = true;
+  document.getElementById('save-multi-wrap').style.display = 'none';
+  document.getElementById('multi-modal').classList.add('active');
+});
+
+document.getElementById('close-multi-btn').addEventListener('click', function() { closeModal('multi-modal'); });
+document.getElementById('cancel-multi-btn').addEventListener('click', function() { closeModal('multi-modal'); });
+
+document.getElementById('multi-file-input').addEventListener('change', function(e) {
+  var files = Array.prototype.slice.call(e.target.files);
+  multiImages = [];
+  var loaded = 0;
+  files.forEach(function(file, idx) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      multiImages[idx] = {dataUrl: ev.target.result};
+      loaded++;
+      if (loaded === files.length) {
+        document.getElementById('multi-preview').innerHTML = multiImages.map(function(img) {
+          return '<div class="preview-item"><img src="' + img.dataUrl + '"></div>';
+        }).join('');
+        document.getElementById('ai-multi-btn').disabled = false;
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+document.getElementById('ai-multi-btn').addEventListener('click', function() {
+  if (!multiImages.length) return;
+  multiResults = [];
+  setAI('ai-multi-btn', 'ai-multi-icon', 'ai-multi-text', true, '読み取り中 (0/' + multiImages.length + ')...');
+
+  var idx = 0;
+  function processNext() {
+    if (idx >= multiImages.length) {
+      renderMultiResults();
+      setAI('ai-multi-btn', 'ai-multi-icon', 'ai-multi-text', false, 'AIで全枚読み取る');
+      document.getElementById('save-multi-wrap').style.display = '';
+      showNotif('✦ ' + multiImages.length + '枚の読み取り完了！');
+      return;
+    }
+    document.getElementById('ai-multi-text').textContent = '読み取り中 (' + (idx+1) + '/' + multiImages.length + ')...';
+    var img = multiImages[idx];
+    idx++;
+    callAI(img.dataUrl).then(function(p) {
+      multiResults.push({
+        name: p.name||'', kana: p.kana||'', company: p.company||'',
+        dept: p.dept||'', jobTitle: p.jobTitle||'', email: p.email||'',
+        tel: p.tel||'', address: p.address||'', industry: p.industry||'',
+        image: img.dataUrl, date: today(), meeting: ''
+      });
+      processNext();
+    }).catch(function() {
+      multiResults.push({name:'名刺 '+idx, image:img.dataUrl, date:today(), meeting:''});
+      processNext();
+    });
+  }
+  processNext();
+});
+
+function renderMultiResults() {
+  document.getElementById('multi-results').innerHTML = multiResults.map(function(r, i) {
+    return '<div class="result-item">' +
+      '<input type="checkbox" class="result-cb" id="chk-' + i + '" checked>' +
+      '<div class="result-body">' +
+        '<h4>' + esc(r.name || '不明') + '</h4>' +
+        '<p>' + esc([r.company, r.jobTitle].filter(Boolean).join(' / ')) + '</p>' +
+        '<p style="margin-top:3px">' + esc([r.email, r.tel].filter(Boolean).join('　')) + '</p>' +
+        '<div style="margin-top:6px">' +
+          '<select data-idx="' + i + '" class="meeting-sel" style="font-size:12px;padding:4px 8px;background:var(--paper);border:1px solid var(--border);font-family:inherit">' +
+            '<option value="">きっかけ選択</option>' +
+            '<option>展示会</option><option>紹介</option><option>営業訪問</option>' +
+            '<option>セミナー</option><option>交流会</option><option>伍心会</option>' +
+            '<option>守成</option><option>オンライン</option><option>その他</option>' +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('multi-results').addEventListener('change', function(e) {
+    if (e.target.classList.contains('meeting-sel')) {
+      var i = parseInt(e.target.getAttribute('data-idx'));
+      if (multiResults[i]) multiResults[i].meeting = e.target.value;
+    }
   });
 }
 
-async function readWithAI() {
-  if(!currentImages.length) return;
-  setAI('ai-btn','ai-icon','ai-text',true,'読み取り中...');
-  try {
-    const p=await callAI(currentImages[0].dataUrl);
-    if(p.name) document.getElementById('f-name').value=p.name;
-    if(p.kana) document.getElementById('f-kana').value=p.kana;
-    if(p.company) document.getElementById('f-company').value=p.company;
-    if(p.dept) document.getElementById('f-dept').value=p.dept;
-    if(p.jobTitle) document.getElementById('f-title').value=p.jobTitle;
-    if(p.email) document.getElementById('f-email').value=p.email;
-    if(p.tel) document.getElementById('f-tel').value=p.tel;
-    if(p.address) document.getElementById('f-address').value=p.address;
-    if(p.industry) document.getElementById('f-industry').value=p.industry;
-    showNotif('✦ AI読み取り完了！内容を確認してください');
-  } catch(e) { showNotif('❌ '+e.message); }
-  setAI('ai-btn','ai-icon','ai-text',false,'AIで名刺を読み取る');
-}
-
-async function readMultiWithAI() {
-  if(!multiImages.length) return;
-  setAI('ai-multi-btn','ai-multi-icon','ai-multi-text',true,`読み取り中 (0/${multiImages.length})...`);
-  const results=[];
-  for(let i=0;i<multiImages.length;i++){
-    document.getElementById('ai-multi-text').textContent=`読み取り中 (${i+1}/${multiImages.length})...`;
-    try {
-      const p=await callAI(multiImages[i].dataUrl);
-      results.push({...p, image:multiImages[i].dataUrl, date:today(), meeting:'', checked:true});
-    } catch { results.push({name:`名刺 ${i+1}`, image:multiImages[i].dataUrl, date:today(), meeting:'', checked:true}); }
+document.getElementById('save-multi-btn').addEventListener('click', function() {
+  var toSave = [];
+  for (var i = 0; i < multiResults.length; i++) {
+    var chk = document.getElementById('chk-' + i);
+    if (chk && chk.checked) {
+      var r = multiResults[i];
+      toSave.push({
+        id: genId(),
+        name: r.name || '',
+        kana: r.kana || '',
+        company: r.company || '',
+        dept: r.dept || '',
+        jobTitle: r.jobTitle || '',
+        email: r.email || '',
+        tel: r.tel || '',
+        address: r.address || '',
+        industry: r.industry || '',
+        meeting: r.meeting || '',
+        date: r.date || today(),
+        memo: '',
+        image: r.image || null
+      });
+    }
   }
-  multiResults=results; renderMultiResults();
-  setAI('ai-multi-btn','ai-multi-icon','ai-multi-text',false,'AIで全枚読み取る');
-  document.getElementById('save-multi-btn').style.display='';
-  showNotif(`✦ ${multiImages.length}枚の読み取り完了！`);
-}
-
-function renderMultiResults() {
-  document.getElementById('multi-results').innerHTML=multiResults.map((r,i)=>`
-    <div class="result-item">
-      <input type="checkbox" class="result-cb" id="chk-${i}" checked>
-      <div class="result-body">
-        <h4>${esc(r.name||'不明')}</h4>
-        <p>${esc([r.company,r.jobTitle].filter(Boolean).join(' / '))}</p>
-        <p style="margin-top:3px">${esc([r.email,r.tel].filter(Boolean).join('　'))}</p>
-        <div style="margin-top:6px">
-          <select onchange="multiResults[${i}].meeting=this.value" style="font-size:12px;padding:4px 8px;background:var(--paper);border:1px solid var(--border);font-family:inherit">
-            <option value="">きっかけ選択</option>
-            <option>展示会</option><option>紹介</option><option>営業訪問</option>
-            <option>セミナー</option><option>交流会</option><option>伍心会</option>
-            <option>守成</option><option>オンライン</option><option>その他</option>
-          </select>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function saveCard() {
-  const name=document.getElementById('f-name').value.trim();
-  if(!name){showNotif('❌ 氏名を入力してください');return;}
-  const card={
-    id:editingId||genId(), name,
-    kana:document.getElementById('f-kana').value.trim(),
-    company:document.getElementById('f-company').value.trim(),
-    dept:document.getElementById('f-dept').value.trim(),
-    jobTitle:document.getElementById('f-title').value.trim(),
-    email:document.getElementById('f-email').value.trim(),
-    tel:document.getElementById('f-tel').value.trim(),
-    address:document.getElementById('f-address').value.trim(),
-    industry:document.getElementById('f-industry').value,
-    meeting:document.getElementById('f-meeting').value,
-    date:document.getElementById('f-date').value,
-    memo:document.getElementById('f-memo').value.trim(),
-    image:currentImages.length?currentImages[0].dataUrl:(editingId?(cards.find(c=>c.id===editingId)||{}).image:null)
-  };
-  cards=editingId?cards.map(c=>c.id===editingId?card:c):[...cards,card];
-  persist(); applyFilters();
-  closeModal('add-modal'); closeModal('detail-modal');
-  showNotif(editingId?'✦ 名刺を更新しました':'✦ 名刺を保存しました');
-  editingId=null;
-}
-function saveMultiCards() {
-  const toSave=[];
-  multiResults.forEach(function(r,i){ const chk=document.getElementById('chk-'+i); if(chk && chk.checked){ toSave.push(Object.assign({},r,{checked:undefined,id:genId()})); } });
-  if(toSave.length===0){ showNotif('❌ 名刺が選択されていません'); return; }
-  cards=cards.concat(toSave); persist(); applyFilters();
+  if (toSave.length === 0) {
+    showNotif('❌ 名刺が選択されていません');
+    return;
+  }
+  toSave.forEach(function(card) { cards.push(card); });
+  persist();
+  applyFilters();
   closeModal('multi-modal');
-  showNotif('✦ '+toSave.length+'枚の名刺を保存しました');
+  showNotif('✦ ' + toSave.length + '枚の名刺を保存しました');
+});
+
+// AI CALL
+function callAI(dataUrl) {
+  var base64 = dataUrl.split(',')[1];
+  var mediaType = dataUrl.match(/data:([^;]+)/)[1];
+  return fetch('/api/read-card', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({imageBase64: base64, mediaType: mediaType})
+  }).then(function(resp) {
+    return resp.json();
+  }).then(function(data) {
+    if (data.error) throw new Error(data.error);
+    return data;
+  });
 }
+
+// DETAIL
+function openDetail(id) {
+  var c = cards.filter(function(x) { return x.id === id; })[0];
+  if (!c) return;
+  document.getElementById('detail-body').innerHTML =
+    (c.image ? '<img src="' + c.image + '" style="width:100%;max-height:180px;object-fit:contain;background:var(--cream);border-bottom:1px solid var(--border);display:block">' : '') +
+    '<div style="padding:18px">' +
+      '<div class="detail-hero">' +
+        '<div style="font-family:Space Mono,monospace;font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:5px">' + esc(c.company||'') + '</div>' +
+        '<h2>' + esc(c.name||'') + '</h2>' +
+        (c.kana ? '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">' + esc(c.kana) + '</div>' : '') +
+        '<div style="font-size:13px;color:var(--muted)">' + esc([c.dept,c.jobTitle].filter(Boolean).join(' / ')) + '</div>' +
+      '</div>' +
+      '<div class="detail-grid">' +
+        '<div class="df"><label>📧 メール</label><p>' + (c.email ? '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>' : '—') + '</p></div>' +
+        '<div class="df"><label>📞 電話</label><p>' + esc(c.tel||'—') + '</p></div>' +
+        '<div class="df full"><label>📍 住所</label><p>' + esc(c.address||'—') + '</p></div>' +
+        '<div class="df"><label>🏢 業種</label><p>' + esc(c.industry||'—') + '</p></div>' +
+        '<div class="df"><label>🤝 きっかけ</label><p>' + esc(c.meeting||'—') + '</p></div>' +
+        '<div class="df"><label>📅 受け取り日</label><p>' + esc(c.date||'—') + '</p></div>' +
+        (c.memo ? '<div class="df full"><label>📝 メモ</label><p style="white-space:pre-wrap">' + esc(c.memo) + '</p></div>' : '') +
+      '</div>' +
+      '<div class="form-actions">' +
+        '<button class="btn btn-danger" data-del-detail="' + c.id + '">🗑 削除</button>' +
+        '<button class="btn btn-primary" data-edit-detail="' + c.id + '">✏️ 編集</button>' +
+      '</div>' +
+    '</div>';
+  document.getElementById('detail-modal').classList.add('active');
+}
+
+document.getElementById('detail-body').addEventListener('click', function(e) {
+  var delBtn = e.target.closest('[data-del-detail]');
+  var editBtn = e.target.closest('[data-edit-detail]');
+  if (delBtn) deleteCard(delBtn.getAttribute('data-del-detail'));
+  if (editBtn) { closeModal('detail-modal'); setTimeout(function() { openEdit(editBtn.getAttribute('data-edit-detail')); }, 100); }
+});
+
+document.getElementById('close-detail-btn').addEventListener('click', function() { closeModal('detail-modal'); });
+
+function openEdit(id) {
+  var c = cards.filter(function(x) { return x.id === id; })[0];
+  if (!c) return;
+  editingId = id;
+  currentImages = c.image ? [{dataUrl: c.image}] : [];
+  document.getElementById('f-name').value = c.name || '';
+  document.getElementById('f-kana').value = c.kana || '';
+  document.getElementById('f-company').value = c.company || '';
+  document.getElementById('f-dept').value = c.dept || '';
+  document.getElementById('f-title').value = c.jobTitle || '';
+  document.getElementById('f-email').value = c.email || '';
+  document.getElementById('f-tel').value = c.tel || '';
+  document.getElementById('f-address').value = c.address || '';
+  document.getElementById('f-industry').value = c.industry || '';
+  document.getElementById('f-meeting').value = c.meeting || '';
+  document.getElementById('f-date').value = c.date || '';
+  document.getElementById('f-memo').value = c.memo || '';
+  renderSinglePreview();
+  document.getElementById('ai-btn').disabled = currentImages.length === 0;
+  document.getElementById('add-modal-title').textContent = '✏️ 名刺を編集';
+  document.getElementById('add-modal').classList.add('active');
+}
+
 function deleteCard(id) {
-  if(!confirm('この名刺を削除しますか？')) return;
-  cards=cards.filter(c=>c.id!==id); persist(); applyFilters();
+  if (!confirm('この名刺を削除しますか？')) return;
+  cards = cards.filter(function(c) { return c.id !== id; });
+  persist();
+  applyFilters();
   closeModal('detail-modal');
   showNotif('🗑 名刺を削除しました');
 }
 
-function openDetail(id) {
-  const c=cards.find(x=>x.id===id); if(!c) return;
-  document.getElementById('detail-body').innerHTML=`
-    ${c.image?`<img src="${c.image}" style="width:100%;max-height:200px;object-fit:contain;background:var(--cream);border-bottom:1px solid var(--border);display:block">`:''}
-    <div style="padding:20px">
-      <div class="detail-hero">
-        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:6px">${esc(c.company||'')}</div>
-        <h2>${esc(c.name||'')}</h2>
-        ${c.kana?`<div style="font-size:12px;color:var(--muted);margin-bottom:4px">${esc(c.kana)}</div>`:''}
-        <div style="font-size:13px;color:var(--muted)">${esc([c.dept,c.jobTitle].filter(Boolean).join(' / '))}</div>
-      </div>
-      <div class="detail-grid">
-        <div class="df"><label>📧 メール</label><p>${c.email?`<a href="mailto:${esc(c.email)}">${esc(c.email)}</a>`:'—'}</p></div>
-        <div class="df"><label>📞 電話</label><p>${esc(c.tel||'—')}</p></div>
-        <div class="df full"><label>📍 住所</label><p>${esc(c.address||'—')}</p></div>
-        <div class="df"><label>🏢 業種</label><p>${esc(c.industry||'—')}</p></div>
-        <div class="df"><label>🤝 きっかけ</label><p>${esc(c.meeting||'—')}</p></div>
-        <div class="df"><label>📅 受け取り日</label><p>${esc(c.date||'—')}</p></div>
-        ${c.memo?`<div class="df full"><label>📝 メモ</label><p style="white-space:pre-wrap">${esc(c.memo)}</p></div>`:''}
-      </div>
-      <div class="form-actions">
-        <button class="btn btn-danger" onclick="deleteCard('${c.id}')">🗑 削除</button>
-        <button class="btn btn-primary" onclick="closeModal('detail-modal');setTimeout(()=>openEdit('${c.id}'),100)">✏️ 編集</button>
-      </div>
-    </div>`;
-  document.getElementById('detail-modal').classList.add('active');
+function resetForm() {
+  ['f-name','f-kana','f-company','f-dept','f-title','f-email','f-tel','f-address','f-memo'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-industry').value = '';
+  document.getElementById('f-meeting').value = '';
 }
 
-function resetForm() {
-  ['f-name','f-kana','f-company','f-dept','f-title','f-email','f-tel','f-address','f-memo'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-industry').value='';
-  document.getElementById('f-meeting').value='';
+function setAI(btnId, iconId, textId, loading, text) {
+  document.getElementById(btnId).disabled = loading;
+  var ic = document.getElementById(iconId);
+  ic.textContent = loading ? '◌' : '✦';
+  ic.className = loading ? 'spin' : '';
+  document.getElementById(textId).textContent = text;
 }
-function setAI(btn,icon,txt,loading,text) {
-  document.getElementById(btn).disabled=loading;
-  const ic=document.getElementById(icon);
-  ic.textContent=loading?'◌':'✦';
-  ic.className=loading?'spin':'';
-  document.getElementById(txt).textContent=text;
-}
-function persist() { localStorage.setItem('meishi_cards',JSON.stringify(cards)); }
-function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
-function today() { return new Date().toISOString().split('T')[0]; }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-let notifTimer;
-function showNotif(msg) {
-  const n=document.getElementById('notif');
-  n.textContent=msg; n.classList.add('show');
-  clearTimeout(notifTimer);
-  notifTimer=setTimeout(()=>n.classList.remove('show'),3500);
-}
+
+// Search events
+document.getElementById('s-text').addEventListener('input', applyFilters);
+document.getElementById('s-industry').addEventListener('change', applyFilters);
+document.getElementById('s-meeting').addEventListener('change', applyFilters);
+document.getElementById('s-from').addEventListener('change', applyFilters);
+document.getElementById('s-to').addEventListener('change', applyFilters);
+document.getElementById('clear-filter-btn').addEventListener('click', function() {
+  ['s-text','s-from','s-to'].forEach(function(id) { document.getElementById(id).value=''; });
+  document.getElementById('s-industry').value = '';
+  document.getElementById('s-meeting').value = '';
+  applyFilters();
+});
+
+// Overlay click to close
+document.querySelectorAll('.overlay').forEach(function(o) {
+  o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('active'); });
+});
+
+// Init
+applyFilters();
 </script>
 </body>
 </html>
