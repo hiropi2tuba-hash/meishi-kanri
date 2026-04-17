@@ -241,10 +241,9 @@ var currentImages = [];
 var multiImages = [];
 var multiResults = [];
 
-try { cards = JSON.parse(localStorage.getItem('meishi_cards') || '[]'); } catch(e) { cards = []; }
-
+// データはサーバーから読み込む
 function persist() {
-  try { localStorage.setItem('meishi_cards', JSON.stringify(cards)); } catch(e) {}
+  // サーバーへの保存は各操作で個別に行う
 }
 
 function genId() {
@@ -421,17 +420,25 @@ document.getElementById('save-card-btn').addEventListener('click', function() {
     memo: document.getElementById('f-memo').value.trim(),
     image: currentImages.length ? currentImages[0].dataUrl : (editingId ? (cards.filter(function(c){return c.id===editingId;})[0]||{}).image : null)
   };
-  if (editingId) {
-    cards = cards.map(function(c) { return c.id === editingId ? card : c; });
-  } else {
-    cards.push(card);
-  }
-  persist();
-  applyFilters();
-  closeModal('add-modal');
-  closeModal('detail-modal');
-  showNotif(editingId ? '✦ 名刺を更新しました' : '✦ 名刺を保存しました');
-  editingId = null;
+  var isEdit = !!editingId;
+  fetch('/api/cards', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(card)
+  }).then(function() {
+    if (isEdit) {
+      cards = cards.map(function(c) { return c.id === card.id ? card : c; });
+    } else {
+      cards.push(card);
+    }
+    applyFilters();
+    closeModal('add-modal');
+    closeModal('detail-modal');
+    showNotif(isEdit ? '✦ 名刺を更新しました' : '✦ 名刺を保存しました');
+    editingId = null;
+  }).catch(function(e) {
+    showNotif('❌ 保存失敗: ' + e.message);
+  });
 });
 
 // MULTI MODAL
@@ -557,11 +564,21 @@ document.getElementById('save-multi-btn').addEventListener('click', function() {
     showNotif('❌ 名刺が選択されていません');
     return;
   }
-  toSave.forEach(function(card) { cards.push(card); });
-  persist();
-  applyFilters();
-  closeModal('multi-modal');
-  showNotif('✦ ' + toSave.length + '枚の名刺を保存しました');
+  var promises = toSave.map(function(card) {
+    return fetch('/api/cards', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(card)
+    });
+  });
+  Promise.all(promises).then(function() {
+    toSave.forEach(function(card) { cards.push(card); });
+    applyFilters();
+    closeModal('multi-modal');
+    showNotif('✦ ' + toSave.length + '枚の名刺を保存しました');
+  }).catch(function(e) {
+    showNotif('❌ 保存失敗: ' + e.message);
+  });
 });
 
 // AI CALL
@@ -644,11 +661,14 @@ function openEdit(id) {
 
 function deleteCard(id) {
   if (!confirm('この名刺を削除しますか？')) return;
-  cards = cards.filter(function(c) { return c.id !== id; });
-  persist();
-  applyFilters();
-  closeModal('detail-modal');
-  showNotif('🗑 名刺を削除しました');
+  fetch('/api/cards/' + id, {method: 'DELETE'}).then(function() {
+    cards = cards.filter(function(c) { return c.id !== id; });
+    applyFilters();
+    closeModal('detail-modal');
+    showNotif('🗑 名刺を削除しました');
+  }).catch(function(e) {
+    showNotif('❌ 削除失敗: ' + e.message);
+  });
 }
 
 function resetForm() {
@@ -685,8 +705,14 @@ document.querySelectorAll('.overlay').forEach(function(o) {
   o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('active'); });
 });
 
-// Init
-applyFilters();
+// Init - サーバーからデータ読み込み
+fetch('/api/cards').then(function(r) { return r.json(); }).then(function(data) {
+  cards = data || [];
+  applyFilters();
+}).catch(function() {
+  cards = [];
+  applyFilters();
+});
 </script>
 </body>
 </html>
